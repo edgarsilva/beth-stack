@@ -5,25 +5,14 @@ import { staticPlugin } from "@elysiajs/static";
 
 // Pages
 import BaseHtml from "./pages/layouts/base";
-import Hero from "./components/Hero";
 
 // Components
+import Hero from "./components/Hero";
 
 const app = new Elysia()
   .use(staticPlugin())
-
   .use(html())
-
   .get("/", () => "Hello Elysia")
-
-  .get("/jsx", ({ html }) => {
-    return html(
-      <BaseHtml>
-        <h1 class="text-red-400">Hello World something test</h1>
-      </BaseHtml>,
-    );
-  })
-
   .get("/hero", ({ html }) => {
     return html(
       <BaseHtml>
@@ -33,7 +22,6 @@ const app = new Elysia()
       </BaseHtml>,
     );
   })
-
   .onStart(({ log }) => {
     if (process.env.NODE_ENV === "development") {
       // void fetch("http://localhost:3001/restart");
@@ -41,10 +29,11 @@ const app = new Elysia()
       console.log("🦊 Triggering Live Reload");
     }
   })
-
   .onError(({ code, error, request, log }) => {
     // log.error(` ${request.method} ${request.url}`, code, error);
-    console.error(error);
+    console.error("request ->", request);
+    console.error("code ->", code);
+    console.error("DESCRIBE ERROR ->", error);
   })
   .listen(3000);
 
