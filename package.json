@@ -6,10 +6,17 @@
     "dev": "bun run --watch src/main.tsx"
   },
   "dependencies": {
+    "@elysiajs/cron": "^0.7.0",
     "@elysiajs/html": "^0.7.3",
     "@elysiajs/static": "^0.7.1",
     "@kitajs/ts-html-plugin": "^1.3.0",
-    "elysia": "latest"
+    "@libsql/client": "^0.3.6",
+    "@prisma/adapter-libsql": "^5.5.2",
+    "@prisma/client": "^5.5.2",
+    "@t3-oss/env-core": "^0.7.1",
+    "elysia": "latest",
+    "prisma": "^5.5.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.5.1",

@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./db/dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // has many:
+  posts   Post[]
+  Comment Comment[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // belongs to:
+  authorId Int
+  author   User      @relation(fields: [authorId], references: [id])
+  Comment  Comment[]
+
+  @@index([authorId], name: "postToAuthorId")
+  @@index([title], name: "title")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // belongs to:
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  @@index([authorId], name: "commentToAuthorId")
+  @@index([postId], name: "commentToPostId")
+}

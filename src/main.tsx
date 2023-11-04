@@ -2,22 +2,55 @@
 import { Elysia } from "elysia";
 import { html } from "@elysiajs/html";
 import { staticPlugin } from "@elysiajs/static";
+import { cron } from "@elysiajs/cron";
+
+// Prisma preload singleton
+import { prisma, tursoSync } from "@/lib/prisma";
 
 // Pages
 import BaseHtml from "./pages/layouts/base";
 
 // Components
+import PostList from "./components/PostList";
 import Hero from "./components/Hero";
 
 const app = new Elysia()
+  .use(
+    cron({
+      name: "tursosync.cron",
+      pattern: "*/30 * * * * *",
+      run() {
+        const now = performance.now();
+        // console.log("Syncing database...");
+        tursoSync().then(() => {
+          console.log(
+            `Turso local replica synced in ${performance.now() - now}ms`,
+          );
+        });
+      },
+    }),
+  )
   .use(staticPlugin())
   .use(html())
   .get("/", () => "Hello Elysia")
+  .get("/btnx", () => {
+    return (
+      <button
+        type="button"
+        className="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
+      >
+        Button text
+      </button>
+    );
+  })
   .get("/hero", ({ html }) => {
     return html(
       <BaseHtml>
         <div class="h-screen w-screen bg-gray-900">
           <Hero />
+        </div>
+        <div class="h-screen w-screen bg-gray-900">
+          <PostList />
         </div>
       </BaseHtml>,
     );
