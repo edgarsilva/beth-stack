@@ -10,6 +10,15 @@ export const env = createEnv({
       .optional()
       .transform((s) => (s || "development").toLowerCase())
       .pipe(z.enum(["development", "production", "test"])),
+    DEV: z.coerce
+      .boolean()
+      .optional()
+      .transform(() => process.env.NODE_ENV === "development"),
+    PROD: z.coerce
+      .boolean()
+      .optional()
+      .transform(() => process.env.NODE_ENV === "production"),
+    LIVE_RELOAD_PORT: z.number().optional().default(8001),
   },
 
   /**

@@ -22,6 +22,7 @@ model User {
   // has many:
   posts   Post[]
   Comment Comment[]
+  Todo    Todo[]
 }
 
 model Post {
@@ -55,4 +56,19 @@ model Comment {
 
   @@index([authorId], name: "commentToAuthorId")
   @@index([postId], name: "commentToPostId")
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // belongs to:
+  authorId Int?
+  author   User? @relation(fields: [authorId], references: [id])
+
+  @@index([authorId], name: "todoToAuthorId")
 }

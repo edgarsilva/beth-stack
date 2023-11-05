@@ -3,18 +3,25 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/main.tsx"
+    "tw-server": "tailwindcss -i ./src/styles/global.css -o ./public/global.css --watch",
+    "lr-server": "bun run src/lib/live-reload-server.ts",
+    "dev-server": "bun run --watch src/app.tsx",
+    "dev": "concurrently \"bun run tw-server\" \"bun run lr-server\" \"bun run dev-server\"",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@elysiajs/cron": "^0.7.0",
     "@elysiajs/html": "^0.7.3",
     "@elysiajs/static": "^0.7.1",
+    "@elysiajs/websocket": "^0.2.8",
     "@kitajs/ts-html-plugin": "^1.3.0",
     "@libsql/client": "^0.3.6",
     "@prisma/adapter-libsql": "^5.5.2",
     "@prisma/client": "^5.5.2",
     "@t3-oss/env-core": "^0.7.1",
     "elysia": "latest",
+    "libsql": "",
+    "nanoid": "^5.0.2",
     "prisma": "^5.5.2",
     "zod": "^3.22.4"
   },
@@ -28,7 +35,7 @@
     "prettier-plugin-tailwindcss": "^0.5.6",
     "typescript": "^5.2.2"
   },
-  "module": "src/main.js",
+  "module": "src/app.js",
   "type": "module",
   "peerDependencies": {
     "typescript": "^5.0.0"
