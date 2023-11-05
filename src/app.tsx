@@ -13,9 +13,9 @@ import { liveReloadPlugin } from "@/lib/live-reload-plugin";
 import { prisma } from "@/lib/prisma";
 import { tursoSyncPlugin } from "@/lib/turso-sync";
 
-// Pages & Api
-import { apiRoutes } from "./routes/apiRoutes";
-import { pageRoutes } from "./routes/pageRoutes";
+// Routers
+import { apiRouter } from "./routes/apiRoutes";
+import { pagesRouter } from "./routes/pagesRouter";
 
 // App Context
 export const ctx = {
@@ -26,8 +26,14 @@ export type AppContext = typeof ctx;
 // App Setup
 const app = new Elysia().use(staticPlugin()).use(tursoSyncPlugin);
 
+// Live Reload only in DEV
+if (env.DEV) {
+  liveReloadPlugin(app);
+}
+
 // Routers
-app.use(pageRoutes(app, ctx)).use(apiRoutes(app, ctx));
+pagesRouter(app, ctx);
+apiRouter(app, ctx);
 
 // .onError(({ code, error, request, log }) => {
 // log.error(` ${request.method} ${request.url}`, code, error);

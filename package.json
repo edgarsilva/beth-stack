@@ -19,10 +19,15 @@
     "@prisma/adapter-libsql": "^5.5.2",
     "@prisma/client": "^5.5.2",
     "@t3-oss/env-core": "^0.7.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
     "elysia": "latest",
     "libsql": "",
+    "lucide-react": "^0.292.0",
     "nanoid": "^5.0.2",
     "prisma": "^5.5.2",
+    "tailwind-merge": "^2.0.0",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"
   },
   "devDependencies": {

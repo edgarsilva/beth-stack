@@ -1,38 +1,47 @@
 // App
 import { html } from "@elysiajs/html";
-import { type Elysia } from "elysia";
+import { type Elysia, t } from "elysia";
 import { type AppContext } from "@/app";
 
 // utils
 import { nanoid } from "nanoid";
 
 // Components
-// import PostList from "@/components/PostList";
+import Todo from "@/components/Todo";
 
-export const apiRoutes = (app: Elysia, { prisma }: AppContext) => {
+export function apiRouter(app: Elysia, { prisma }: AppContext) {
   app
     .use(html())
-    .patch("/api/todos/:id/toggle", async ({ html }) => {
-      return html(
-        <button
-          class="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          hx-get="/api/next-btn"
-          hx-swap="outerHTML"
-        >
-          Prev button
-        </button>,
-      );
-    })
-    .delete("/api/todos/:id/delete", async ({ html }) => {
-      return html(
-        <button
-          class="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          hx-get="/api/prev-btn"
-          hx-swap="outerHTML"
-        >
-          Next button
-        </button>,
-      );
+    .patch(
+      "/api/todos/:id/toggle",
+      async ({ query, params, html }) => {
+        const todo = await prisma.todo.update({
+          where: {
+            id: +params.id,
+          },
+          data: {
+            completed: query.completed === "true" ? false : true,
+          },
+        });
+
+        return html(<Todo todo={todo} />);
+      },
+      {
+        params: t.Object({
+          id: t.String(),
+        }),
+        query: t.Object({
+          completed: t.String(),
+        }),
+      },
+    )
+    .delete("/api/todos/:id", async ({ params, html }) => {
+      await prisma.todo.delete({
+        where: {
+          id: +params.id,
+        },
+      });
+      return;
     })
     .get("/api/todos/:id", () => {})
     .post("/api/todos", async ({ html }) => {
@@ -52,14 +61,7 @@ export const apiRoutes = (app: Elysia, { prisma }: AppContext) => {
         },
       });
 
-      return html(
-        <div class="">
-          <h1>Todo</h1>
-          <p>{todo.title}</p>
-          <p>{todo.content}</p>
-          <p>{todo.completed}</p>
-        </div>,
-      );
+      return html(<Todo todo={todo} />);
     })
     .get("/api/todos", async () => {
       const users = await prisma.user.findMany({
@@ -72,6 +74,6 @@ export const apiRoutes = (app: Elysia, { prisma }: AppContext) => {
     });
 
   return app;
-};
+}
 
-export default apiRoutes;
+export default apiRouter;

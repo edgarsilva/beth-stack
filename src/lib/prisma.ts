@@ -27,40 +27,40 @@ function createPrismaClient() {
   // Sync the remote db with the embedded local replica
   tursoSync();
 
-  return new PrismaClient({
-    adapter,
-    log:
-      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-  });
-
-  // Pass the adapter option to the Prisma Client instance
   // return new PrismaClient({
   //   adapter,
   //   log:
   //     env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-  // }).$extends({
-  //   /**
-  //    * Query logging Client extension
-  //    * Source: https://github.com/prisma/prisma-client-extensions/tree/main/query-logging
-  //    */
-  //   query: {
-  //     $allModels: {
-  //       async $allOperations({ operation, model, args, query }) {
-  //         const start = performance.now();
-  //         const result = await query(args);
-  //         const end = performance.now();
-  //         const time = end - start;
-  //         console.log(
-  //           util.inspect(
-  //             { model, operation, time, args },
-  //             { showHidden: false, depth: null, colors: true },
-  //           ),
-  //         );
-  //         return result;
-  //       },
-  //     },
-  //   },
   // });
+
+  // Pass the adapter option to the Prisma Client instance
+  return new PrismaClient({
+    adapter,
+    log:
+      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+  }).$extends({
+    /**
+     * Query logging Client extension
+     * Source: https://github.com/prisma/prisma-client-extensions/tree/main/query-logging
+     */
+    query: {
+      $allModels: {
+        async $allOperations({ operation, model, args, query }) {
+          const start = performance.now();
+          const result = await query(args);
+          const end = performance.now();
+          const time = end - start;
+          console.log(
+            util.inspect(
+              { model, operation, time, args },
+              { showHidden: false, depth: null, colors: true },
+            ),
+          );
+          return result;
+        },
+      },
+    },
+  });
 }
 
 // Patch to fix BigInt serialization to JSON
